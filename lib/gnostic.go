@@ -87,11 +87,17 @@ func getOpenAPIVersionFromInfo(info *yaml.Node) int {
 		return SourceFormatOpenAPI3
 	}
 
+	if ok && strings.HasPrefix(openapi, "3.1") {
+		fmt.Printf("3.1")
+		return SourceFormatOpenAPI3
+	}
+
 	kind, ok := compiler.StringForScalarNode(compiler.MapValueForKey(m, "kind"))
 	if ok && kind == "discovery#restDescription" {
 		return SourceFormatDiscovery
 	}
 
+	fmt.Printf("Test")
 	return SourceFormatUnknown
 }
 
@@ -241,9 +247,11 @@ func isURL(path string) bool {
 
 // Write bytes to a named file.
 // Certain names have special meaning:
-//   ! writes nothing
-//   - writes to stdout
-//   = writes to stderr
+//
+//	! writes nothing
+//	- writes to stdout
+//	= writes to stderr
+//
 // If a directory name is given, the file is written there with
 // a name derived from the source and extension arguments.
 func writeFile(name string, bytes []byte, source string, extension string) {
@@ -437,7 +445,7 @@ func (g *Gnostic) readOpenAPIText(bytes []byte) (message proto.Message, err erro
 	// Determine the OpenAPI version.
 	g.sourceFormat = getOpenAPIVersionFromInfo(info)
 	if g.sourceFormat == SourceFormatUnknown {
-		return nil, errors.New("unable to identify OpenAPI version")
+		return nil, errors.New("🐀 unable to identify OpenAPI version")
 	}
 	// Compile to the proto model.
 	if g.sourceFormat == SourceFormatOpenAPI2 {
